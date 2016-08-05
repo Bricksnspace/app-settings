@@ -34,6 +34,12 @@ import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
 
 /**
+ * Java application settings/preferences helper
+ * 
+ * Uses Java Preferences from java.util
+ * Can save and load preferences from file
+ * 
+ * @see Preferences
  * 
  * TODO: documentazione nei commenti da fare
  * TODO: evidenziare i default
@@ -41,7 +47,11 @@ import java.util.prefs.Preferences;
  *
  */
 public class AppSettings {
+	
+	// true if preferences was read from file
 	private static boolean configured = false;
+	
+	// type definition for preference type
 	public static final int STRING = 1;
 	public static final int BOOLEAN = 2;
 	public static final int INTEGER = 3;
@@ -51,12 +61,13 @@ public class AppSettings {
 	public static final int MAXTYPES = 6;
 	
 	private static Preferences prefs;
-	private static boolean stored = false;
+	
+	// internal structures for preferences name, description and type
 	private static Map<String,String> displayName = new HashMap<String,String>();
 	private static Map<String,Integer> types = new HashMap<String,Integer>();
 	private static List<String> names = new ArrayList<String>(); 
 	
-	public static String prefsFile = null;
+	private static String prefsFile = null;
 	
 
 
@@ -78,11 +89,19 @@ public class AppSettings {
 
 
 
+	/**
+	 * Opens and reads preferences from file, if exists.
+	 * If not exists, creates a new file, and set a boolean to false to notify that is a first run.
+	 * File name is generated from SimpleClassName() + ".prefs" and stored in current directory.
+	 * After preference file is inited, we can add our preferences with addPref method
+	 * @param app application object Class
+	 * @return true if 
+	 */
 	public static boolean openPreferences(Object app) {		
 		
 		if (prefsFile == null) {
 			if (app == null) {
-				prefsFile = "app.prefs";
+				throw new IllegalArgumentException("Application Class can't be null"); 
 			}
 			else {
 				prefsFile = app.getClass().getSimpleName()+".prefs";
@@ -99,7 +118,6 @@ public class AppSettings {
 		if (pf.canRead() && pf.isFile()) {
 			try {
 				Preferences.importPreferences(new FileInputStream(pf));
-				stored = true;
 			} catch (FileNotFoundException e) {
 				try {
 					prefs.clear();
@@ -130,21 +148,31 @@ public class AppSettings {
 	}
 	
 	
-	
+	/**
+	 * Checks if it is a first run, i.e. return false if preference file doesn't exists
+	 * @return true if a preference file already exists
+	 */
 	public static boolean isConfigured() {
 		
 		return configured;
 	}
 
 
-	
+	/**
+	 * Gets a list of user defined preferences
+	 * @return list of preferences 
+	 */
 	public static List<String> getPrefsList() {
 		
 		return names;
 	}
 	
 	
-	
+	/**
+	 * Retrieve a description text for named preference
+	 * @param name preference to retrieve
+	 * @return a string that describes named preference
+	 */
 	public static String getDescr(String name) {
 		
 		return displayName.get(name);
@@ -152,13 +180,14 @@ public class AppSettings {
 	
 	
 	
-	public static boolean isStored() {
-
-		return stored;
-	}
-	
-	
-	
+	/**
+	 * Add a preference to settings list.
+	 * A preference is defined by a unique name, with a description text (used in OptionDialog as text description) and a type
+	 * 
+	 * @param name unique name for preference
+	 * @param dispName description text
+	 * @param type chosen from defined type (see above)
+	 */
 	public static void addPref(String name, String dispName, int type) {
 		
 		if (name == null || name == "")
@@ -173,13 +202,21 @@ public class AppSettings {
 	}
 
 	
-	
+	/**
+	 * @param name preference to query
+	 * @return type of preference (see above)
+	 */
 	public static int getType(String name) {
 		
 		return types.get(name);
 	}
 	
 	
+	/**
+	 * Write current preferences to preference file
+	 * @throws IOException
+	 * @throws BackingStoreException
+	 */
 	public static void savePreferences() throws IOException, BackingStoreException {
 		
 		File spf = new File(prefsFile);
@@ -187,41 +224,81 @@ public class AppSettings {
 	}
 	
 	
-	
+	/**
+	 * Save a preference of type STRING, FILE or FOLDER
+	 * @param key preference name to save
+	 * @param value
+	 */
 	public static void put(String key, String value) {
 		prefs.put(key, value);
 	}
 	
 	
+	/**
+	 * Save a preference of type BOOLEAN
+	 * @param key preference name to save
+	 * @param value
+	 */
 	public static void putBool(String key, boolean value) {
 		prefs.putBoolean(key, value);
 	}
 	
 	
+	/**
+	 * Save a preference of type INTEGER
+	 * @param key preference name to save
+	 * @param value
+	 */
 	public static void putInt(String key, int value) {
 		prefs.putInt(key, value);
 	}
 	
 	
+	/**
+	 * Save a preference of type FLOAT
+	 * @param key preference name to save
+	 * @param value
+	 */
 	public static void putFloat(String key, float value) {
 		prefs.putFloat(key, value);
 	}
 	
 	
+	/**
+	 * Read a preference of type STRING, FILE or FOLDER
+	 * @param key preference name to read
+	 * @return value for preference or empty string if preference is not defined
+	 */
 	public static String get(String key) {
 		return prefs.get(key, "");
 	}
 	
+
+	/**
+	 * Read a preference of type BOOLEAN
+	 * @param key preference name to read
+	 * @return value for preference or false if preference is not defined
+	 */
 	public static boolean getBool(String key) {
 		return prefs.getBoolean(key, false);
 	}
 
 	
+	/**
+	 * Read a preference of type INTEGER
+	 * @param key preference name to read
+	 * @return value for preference or zero if preference is not defined
+	 */
 	public static int getInt(String key) {
 		return prefs.getInt(key, 0);
 	}
 	
 	
+	/**
+	 * Read a preference of type FLOAT
+	 * @param key preference name to read
+	 * @return value for preference or zero if preference is not defined
+	 */
 	public static float getFloat(String key) {
 		return prefs.getFloat(key, 0f);
 	}

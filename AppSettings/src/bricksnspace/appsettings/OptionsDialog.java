@@ -47,7 +47,18 @@ import javax.swing.border.EmptyBorder;
 
 
 
-
+/**
+ * Build and display a dialog for defined preferences, using types and description to define type of controls <br>
+ * <br>
+ * STRING: use a text entry <br>
+ * FILE or FOLDER: use a FileChooserDialog <br>
+ * INTEGER: use a spinner <br>
+ * FLOAT: use a text entry (always use "." for decimal) <br>
+ * BOOLEAN: use a checkbox <br>
+ * 
+ * @author Mario Pascucci
+ *
+ */
 public class OptionsDialog extends JDialog implements ActionListener {
 
 
@@ -92,6 +103,7 @@ public class OptionsDialog extends JDialog implements ActionListener {
 
 		gbc.gridy = 0;
 		
+		// display controls, using preference name for control ID, description for labels.
 		for (String k : new TreeSet<String>(AppSettings.getPrefsList())) {
 			gbc.gridx = 0;
 			switch (AppSettings.getType(k)) {
