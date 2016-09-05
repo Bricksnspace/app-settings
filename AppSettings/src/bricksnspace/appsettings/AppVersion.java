@@ -19,6 +19,16 @@
 
 package bricksnspace.appsettings;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 /**
  * 
  * Static utilities for app versions handling
@@ -144,6 +154,110 @@ public class AppVersion {
 		return 0;
 	}
 	
+	
+	
+	/**
+	 * gets a version from an URL
+	 * 
+	 * version is a plain text file with a string representing a version triplet
+	 * 
+	 * @param updateUrl
+	 * @return version read from url
+	 */
+	public static String getUrlVersion(String updateUrl) {
+
+		URL updUrl;
+		try {
+			updUrl = new URL(updateUrl);
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+			return "";
+		}
+		URLConnection connect = null;
+		InputStream urlStream = null;
+		try {
+			HttpURLConnection.setFollowRedirects(false);
+			connect = updUrl.openConnection();
+			urlStream = connect.getInputStream();
+		}
+		catch (IOException ex) {
+			// probably no Internet connection is available...
+			return "";
+		}
+		if (connect.getContentLength() == 0) {
+			// no updates
+			return "";
+		}
+		InputStreamReader isr = new InputStreamReader(urlStream);
+		String readVer = "";
+		try {
+			int c;
+			do {
+				c = isr.read();
+				if (c != -1) {
+					readVer += (char)c;
+				}
+			} while (c != -1);
+			readVer = readVer.trim();
+			return readVer;
+		}
+		catch (IOException e) {
+			return readVer;
+		}
+	}
+	
+	
+	/**
+	 * gets version from a zipfile
+	 * Version number must be inside a text file called VERSION as a version string triplet
+	 * 
+	 * @param zf
+	 * @return version from zipfile
+	 */
+	public static String getZipVersion(String zf) {
+		
+		ZipFile z;
+		try {
+			z = new ZipFile(zf);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
+		ZipEntry ze = z.getEntry("VERSION");
+		if (ze == null) {
+			try {
+				z.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return "";
+		}
+		String readVer;
+		try {
+			InputStream is = z.getInputStream(ze);
+			readVer = "";
+			int c;
+			do {
+				c = is.read();
+				if (c != -1) {
+					readVer += (char)c;
+				}
+			} while (c != -1);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
+		try {
+			z.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		readVer = readVer.trim();
+		return readVer;
+	}
+
 	
 	
 

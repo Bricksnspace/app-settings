@@ -65,6 +65,14 @@ public class AppSettings {
 	// internal structures for preferences name, description and type
 	private static Map<String,String> displayName = new HashMap<String,String>();
 	private static Map<String,Integer> types = new HashMap<String,Integer>();
+	private static Map<String,Boolean> appPrivate = new HashMap<String,Boolean>();
+	
+	// defaults 
+	private static Map<String,String> defStrings = new HashMap<String,String>();
+	private static Map<String,Integer> defInts = new HashMap<String,Integer>();
+	private static Map<String,Boolean> defBools = new HashMap<String,Boolean>();
+	private static Map<String,Float> defFloats = new HashMap<String,Float>();
+	
 	private static List<String> names = new ArrayList<String>(); 
 	
 	private static String prefsFile = null;
@@ -199,6 +207,23 @@ public class AppSettings {
 		names.add(name);
 		displayName.put(name, dispName);
 		types.put(name, type);
+		appPrivate.put(name, false); 	// user defined
+	}
+
+	
+	/**
+	 * Add an app private preference to settings list.
+	 * A private preference is defined by a unique name, with a description text (used in OptionDialog as text description) and a type, 
+	 * but isn't user defined, and don't appear in options setting dialog
+	 * 
+	 * @param name unique name for preference
+	 * @param dispName description text
+	 * @param type chosen from defined type (see above)
+	 */
+	public static void addPrivatePref(String name, String dispName, int type) {
+		
+		addPref(name, dispName, type);
+		appPrivate.put(name, true); 	// app private
 	}
 
 	
@@ -265,42 +290,94 @@ public class AppSettings {
 	
 	
 	/**
+	 * Define a default for type STRING, FILE or FOLDER
+	 * @param key preference name to read
+	 * @param def default value if "key" is not present
+	 */
+	public static void defString(String key, String def) {
+		defStrings.put(key, def);
+	}
+	
+
+	/**
 	 * Read a preference of type STRING, FILE or FOLDER
 	 * @param key preference name to read
-	 * @return value for preference or empty string if preference is not defined
+	 * @return value for preference or default if defined or empty string if preference is not defined
 	 */
 	public static String get(String key) {
-		return prefs.get(key, "");
+		if (defStrings.containsKey(key))
+			return prefs.get(key, defStrings.get(key));
+		else
+			return prefs.get(key, "");
 	}
 	
 
 	/**
 	 * Read a preference of type BOOLEAN
 	 * @param key preference name to read
-	 * @return value for preference or false if preference is not defined
+	 * @return value for preference or default if defined or false if preference is not defined
 	 */
 	public static boolean getBool(String key) {
-		return prefs.getBoolean(key, false);
+		if (defBools.containsKey(key))
+			return prefs.getBoolean(key,defBools.get(key));
+		else
+			return prefs.getBoolean(key, false);
 	}
 
 	
 	/**
+	 * Define a default for type BOOLEAN
+	 * @param key preference name to read
+	 * @param def default value if "key" is not present
+	 */
+	public static void defBool(String key, boolean def) {
+		defBools.put(key, def);
+	}
+	
+
+	/**
 	 * Read a preference of type INTEGER
 	 * @param key preference name to read
-	 * @return value for preference or zero if preference is not defined
+	 * @return value for preference or default if defined or zero if preference is not defined
 	 */
 	public static int getInt(String key) {
-		return prefs.getInt(key, 0);
+		if (defInts.containsKey(key))
+			return prefs.getInt(key, defInts.get(key));
+		else
+			return prefs.getInt(key, 0);
 	}
 	
 	
+	/**
+	 * Define a default for type INTEGER
+	 * @param key preference name to read
+	 * @param def default value if "key" is not present
+	 */
+	public static void defInt(String key, int def) {
+		defInts.put(key, def);
+	}
+	
+
 	/**
 	 * Read a preference of type FLOAT
 	 * @param key preference name to read
 	 * @return value for preference or zero if preference is not defined
 	 */
 	public static float getFloat(String key) {
-		return prefs.getFloat(key, 0f);
+		if (defFloats.containsKey(key))
+			return prefs.getFloat(key, defFloats.get(key));
+		else
+			return prefs.getFloat(key, 0f);
+	}
+	
+
+	/**
+	 * Define a default for type FLOAT
+	 * @param key preference name to read
+	 * @param def default value if "key" is not present
+	 */
+	public static void defFloat(String key, float def) {
+		defFloats.put(key, def);
 	}
 	
 

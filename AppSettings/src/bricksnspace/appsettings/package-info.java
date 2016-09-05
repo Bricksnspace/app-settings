@@ -21,3 +21,7 @@
  *
  */
 package bricksnspace.appsettings;
+
+/*
+	ok: internal options (not user-selectable)  
+*/
