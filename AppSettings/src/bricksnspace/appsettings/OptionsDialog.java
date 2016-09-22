@@ -105,6 +105,8 @@ public class OptionsDialog extends JDialog implements ActionListener {
 		
 		// display controls, using preference name for control ID, description for labels.
 		for (String k : new TreeSet<String>(AppSettings.getPrefsList())) {
+			if (AppSettings.isAppPrivate(k))
+				continue;
 			gbc.gridx = 0;
 			switch (AppSettings.getType(k)) {
 			case AppSettings.INTEGER:

@@ -41,8 +41,6 @@ import java.util.prefs.Preferences;
  * 
  * @see Preferences
  * 
- * TODO: documentazione nei commenti da fare
- * TODO: evidenziare i default
  * @author Mario Pascucci
  *
  */
@@ -235,6 +233,16 @@ public class AppSettings {
 		
 		return types.get(name);
 	}
+	
+	
+	
+	public static boolean isAppPrivate(String key) {
+		
+		if (key == null || key =="")
+			throw new IllegalArgumentException("Parameter 'key' is null or empty string.");
+		return appPrivate.get(key);
+	}
+	
 	
 	
 	/**
