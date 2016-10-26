@@ -145,10 +145,6 @@ public class AppSettings {
 				e1.printStackTrace();
 			}
 		}
-		// put here your preferences 
-		names.clear();
-		displayName.clear();
-		types.clear();
 		
 		return isConfigured();
 	}
