@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -226,7 +228,7 @@ public class OptionsDialog extends JDialog implements ActionListener {
 					((JButton)e.getSource()).setText(file);
 					AppSettings.put(name, file);
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					Logger.getGlobal().log(Level.SEVERE,"File path read error", e);
 				}
 			}
 		}

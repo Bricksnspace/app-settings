@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
@@ -129,12 +131,12 @@ public class AppSettings {
 					prefs.clear();
 				} catch (BackingStoreException e1) {
 					// nothing to do
-					e1.printStackTrace();
+					Logger.getGlobal().log(Level.SEVERE,"Preferences read error", e1);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Logger.getGlobal().log(Level.SEVERE,"Preferences read error", e);
 			} catch (InvalidPreferencesFormatException e) {
-				e.printStackTrace();
+				Logger.getGlobal().log(Level.SEVERE,"Preferences read error", e);
 			}
 		}
 		else {
@@ -142,7 +144,7 @@ public class AppSettings {
 				prefs.clear();
 			} catch (BackingStoreException e1) {
 				// nothing to do
-				e1.printStackTrace();
+				Logger.getGlobal().log(Level.SEVERE,"Preferences internal error", e1);
 			}
 		}
 		

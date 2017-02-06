@@ -26,6 +26,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -170,7 +172,7 @@ public class AppVersion {
 		try {
 			updUrl = new URL(updateUrl);
 		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
+			Logger.getGlobal().log(Level.SEVERE,"URL read error", e1);
 			return "";
 		}
 		URLConnection connect = null;
@@ -220,7 +222,7 @@ public class AppVersion {
 		try {
 			z = new ZipFile(zf);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.SEVERE,"Zip file read error", e);
 			return "";
 		}
 		ZipEntry ze = z.getEntry("VERSION");
@@ -228,8 +230,7 @@ public class AppVersion {
 			try {
 				z.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.getGlobal().log(Level.WARNING,"Zip file close error", e);
 			}
 			return "";
 		}
@@ -245,14 +246,13 @@ public class AppVersion {
 				}
 			} while (c != -1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.SEVERE,"Zip file read error", e);
 			return "";
 		}
 		try {
 			z.close();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			Logger.getGlobal().log(Level.WARNING,"Zip file close error", e1);
 		}
 		readVer = readVer.trim();
 		return readVer;
