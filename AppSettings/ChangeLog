@@ -1,3 +1,8 @@
+2017-03-18  Mario Pascucci  <mpascucci@gmail.com>
+
+	* src/bricksnspace/appsettings/AppSettings.java (openPreferences): (unwanted behavior) if preference file is missing 
+		read old data from general user preferences. Fixed 
+
 2016-10-26  Mario Pascucci  <mpascucci@gmail.com>
 
 	* src/bricksnspace/appsettings/AppSettings.java (openPreferences): Open a preferences file does not delete anymore defined preferences and defaults

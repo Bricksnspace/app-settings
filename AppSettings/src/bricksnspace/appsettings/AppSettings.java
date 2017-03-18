@@ -116,16 +116,15 @@ public class AppSettings {
 			}
 		}
 		File pf = new File(prefsFile);
-		if (pf.isFile() && pf.canRead()) {
-			configured = true;
-		}
-		else {
-			configured = false;
-		}
-		prefs = Preferences.userNodeForPackage(app.getClass());
+		configured = false;
+		//prefs = Preferences.userNodeForPackage(app.getClass());
 		if (pf.canRead() && pf.isFile()) {
 			try {
+				prefs = Preferences.userNodeForPackage(app.getClass());
+				prefs.clear();
 				Preferences.importPreferences(new FileInputStream(pf));
+				configured = true;
+
 			} catch (FileNotFoundException e) {
 				try {
 					prefs.clear();
@@ -135,12 +134,13 @@ public class AppSettings {
 				}
 			} catch (IOException e) {
 				Logger.getGlobal().log(Level.SEVERE,"Preferences read error", e);
-			} catch (InvalidPreferencesFormatException e) {
+			} catch (InvalidPreferencesFormatException | BackingStoreException e) {
 				Logger.getGlobal().log(Level.SEVERE,"Preferences read error", e);
 			}
 		}
 		else {
 			try {
+				prefs = Preferences.userNodeForPackage(app.getClass());
 				prefs.clear();
 			} catch (BackingStoreException e1) {
 				// nothing to do
